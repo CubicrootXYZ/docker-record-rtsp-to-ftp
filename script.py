@@ -47,7 +47,7 @@ class MyServer(BaseHTTPRequestHandler):
 
 # Record and upload data
 def record_and_upload(post_data):
-	file_name = datetime.today().strftime('%Y%m%d_%H%M%S') + '_' + post_data['name'] + '.mov'
+	file_name = datetime.today().strftime('%Y%m%d_%H%M%S') + '_' + post_data['name'] + '.mp4'
 	print('Start recording: {}'.format(file_name))
 	connection_string = f"ftp://{post_data['user']}:{post_data['password']}@{post_data['host']}"
 	process = subprocess.Popen(('ffmpeg -rtsp_transport tcp -y -i {} -t {} -vcodec copy -acodec copy /tmp/{} && curl --upload-file /tmp/{} {}{} && rm /tmp/{} > /dev/null'.format(post_data['stream_url'], post_data['duration'], file_name, file_name,connection_string, '/' + file_name, file_name)), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
