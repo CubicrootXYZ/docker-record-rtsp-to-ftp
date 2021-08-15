@@ -11,12 +11,7 @@ The main concept is that the camera motion script triggers the POST api of this 
 http://<script_runner_machine_ip>:11122
 
 ```
-{
-	"name": "<camera_name>",
-	"duration": 10,
-	"stream_url": "rtsp://<ip>:8554/unicast",
-	"ftp_url": "ftp://<ftp_user>:<ftp_pass>@<ftp_ip>/<ftp_dir>"
-}
+'{"name": "<camera_name>", "duration": 10, "stream_url": "rtsp://<ip>:8554/unicast", "host": "<ftp_host>", "user": "<ftp_user>", "password": "<ftp_password>"}'
 ```
 **Example motion sh script for Xiaomi Dafang camera:**
 
