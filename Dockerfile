@@ -17,7 +17,7 @@ RUN git clone https://github.com/CubicrootXYZ/docker-record-rtsp-to-ftp.git /usr
 RUN pip install ftputil
 
 # entry point
-CMD python script.py 11122
+CMD python -u script.py 11122
 
 # expose port
 EXPOSE 11122

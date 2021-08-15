@@ -33,7 +33,7 @@ class MyServer(BaseHTTPRequestHandler):
 		content_length = int(self.headers['Content-Length'])
 		post_data = json.loads(self.rfile.read(content_length))
 		try:
-			if post_data['name'] and post_data['duration'] and post_data['stream_url'] and post_data['ftp_url']:
+			if post_data['name'] and post_data['duration'] and post_data['stream_url'] and post_data['host'] and post_data['user'] and post_data['password']:
 				t = threading.Thread(target=record_and_upload, args=[post_data])
 				t.setDaemon(False)
 				t.start()
