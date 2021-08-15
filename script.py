@@ -16,6 +16,8 @@ from datetime import datetime
 from sys import argv
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
+import time
+import ftputil 
 
 # HTTP server class
 class MyServer(BaseHTTPRequestHandler):
@@ -47,10 +49,26 @@ class MyServer(BaseHTTPRequestHandler):
 def record_and_upload(post_data):
 	file_name = datetime.today().strftime('%Y%m%d_%H%M%S') + '_' + post_data['name'] + '.mov'
 	print('Start recording: {}'.format(file_name))
-	process = subprocess.Popen(('ffmpeg -rtsp_transport tcp -y -i {} -t {} -vcodec copy -acodec copy /tmp/{} && curl --upload-file /tmp/{} {}{} && rm /tmp/{} > /dev/null'.format(post_data['stream_url'], post_data['duration'], file_name, file_name, post_data['ftp_url'], '/' + file_name, file_name)), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	connection_string = f"ftp://{post_data['user']}:{post_data['password']}@{post_data['host']}"
+	process = subprocess.Popen(('ffmpeg -rtsp_transport tcp -y -i {} -t {} -vcodec copy -acodec copy /tmp/{} && curl --upload-file /tmp/{} {}{} && rm /tmp/{} > /dev/null'.format(post_data['stream_url'], post_data['duration'], file_name, file_name,connection_string, '/' + file_name, file_name)), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = process.communicate()
 	errcode = process.returncode
 	print('Recorded and uploaded file: {}'.format(file_name))
+	clean_ftp(post_data)
+
+def clean_ftp(post_data):
+	print("Deleting files > 14 days")
+	host = ftputil.FTPHost(post_data['host'], post_data['user'], post_data['password'])
+	now = time.time()
+	names = host.listdir(host.curdir)
+	for name in names:
+		if host.path.getmtime(name) < (now - (14 * 86400)):
+			if host.path.isfile(name):
+				host.remove(name)
+
+
+	print ('Closing FTP connection')
+	host.close()
 
 # Main Loop
 def main_loop(port=11122):
@@ -66,3 +84,4 @@ try:
 except KeyboardInterrupt:
 	print('Interrupted by keypress')
 	sys.exit(0)
+

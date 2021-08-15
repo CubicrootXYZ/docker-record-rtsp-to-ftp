@@ -36,7 +36,7 @@ if [ "$1" == "on" ]; then
 	if [ "$state" == "on" ] ; then
 		/system/sdcard/bin/curl -s -X POST \
 		-H "Content-Type: application/json" \
-		--data '{"name": "<camera_name>", "duration": 10, "stream_url": "rtsp://<ip>:8554/unicast", "ftp_url": "ftp://<ftp_user>:<ftp_pass>@<ftp_ip>/<ftp_dir>"}' \
+		--data '{"name": "<camera_name>", "duration": 10, "stream_url": "rtsp://<ip>:8554/unicast", "host": "<ftp_host>", "user": "<ftp_user>", "password": "<ftp_password>"}' \
 		http://<script_runner_machine_ip>:11122 2>/dev/null
 	fi
 
